@@ -1,0 +1,64 @@
+name: auris
+description: "Auris: a clinic-ready digital audiometer for pure-tone hearing assessment."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.1.2 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.6
+
+  # --- Audio: pure-tone presentation -------------------------------------
+  # Tones are synthesised as PCM in pure Dart (lib/core/audiometry/tone_synth.dart)
+  # and written to a cached WAV file; audioplayers handles device playback.
+  # 6.x is required on Windows: audioplayers_windows 3.x includes
+  # <experimental/coroutine>, which MSVC 14.51 (Visual Studio 2026) rejects
+  # outright rather than warning about.
+  audioplayers: ^6.8.1
+  path_provider: ^2.1.4
+
+  # --- Persistence -------------------------------------------------------
+  sqflite: ^2.3.3              # mobile
+  sqflite_common_ffi: ^2.3.3   # windows / linux / macos desktop
+  # Ships the native SQLite library with the app. Windows has no system
+  # sqlite3.dll, so without this the desktop build starts and then fails with
+  # "Failed to load dynamic library 'sqlite3.dll'".
+  sqlite3_flutter_libs: ^0.5.24
+  path: ^1.9.0
+
+  # --- Cloud sync (optional; activates only when .env is populated) -------
+  supabase_flutter: ^2.5.6
+  connectivity_plus: ^6.0.5
+
+  # --- Report generation -------------------------------------------------
+  pdf: ^3.11.1
+  printing: ^5.13.1
+
+  # --- Misc --------------------------------------------------------------
+  flutter_dotenv: ^5.1.0
+  shared_preferences: ^2.3.2
+  intl: ^0.19.0
+  uuid: ^4.4.2
+  crypto: ^3.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/Logo.png
+    # Bundled for the PDF report: the pdf package's built-in Helvetica has no
+    # Unicode coverage, so dashes, "≥" and non-Latin names would render blank.
+    # Roboto is Apache-2.0 (see assets/fonts/Roboto-LICENSE.txt).
+    - assets/fonts/Roboto-Regular.ttf
+    - assets/fonts/Roboto-Bold.ttf
+    - .env

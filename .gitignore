@@ -1,0 +1,106 @@
+# ---------------------------------------------------------------------------
+# Secrets: never commit these
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+secrets.*
+credentials.*
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+service-account*.json
+google-services.json
+GoogleService-Info.plist
+
+# Flutter copies declared assets (including .env) into build output.
+# build/ is ignored below, but be explicit so this is never missed.
+**/build/**/.env
+**/.dart_tool/**/.env
+
+# ---------------------------------------------------------------------------
+# Patient data: this is a health app. No database or export may be committed.
+# ---------------------------------------------------------------------------
+*.sqlite
+*.sqlite3
+*.db
+auris.db*
+patients*.csv
+patients*.json
+exports/
+*.audiogram.pdf
+
+# ---------------------------------------------------------------------------
+# Build outputs
+# ---------------------------------------------------------------------------
+build/
+dist/
+out/
+.next/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/macos/Flutter/ephemeral/
+**/linux/flutter/ephemeral/
+**/windows/flutter/ephemeral/
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/android/.gradle/
+**/android/local.properties
+app.*.symbols
+app.*.map.json
+**/doc/api/
+
+# ---------------------------------------------------------------------------
+# Language / tooling
+# ---------------------------------------------------------------------------
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.class
+*.log
+
+# ---------------------------------------------------------------------------
+# Editors and OS
+# ---------------------------------------------------------------------------
+.idea/
+*.iml
+*.ipr
+*.iws
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ---------------------------------------------------------------------------
+# Large media / archives: keep the repo cloneable
+# ---------------------------------------------------------------------------
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.rar
+*.pptx
+*.mp4
+*.mov
+*.wav
+!assets/**/*.wav
+
+# Local assistant settings
+.claude/

@@ -1,0 +1,13 @@
+- Landing - Onboarding 1,2,...  - [ User Login <-> User Sign in ] - Dashboard - Existing Cadidate list 
+									      - New Cadidate - Candidate registrartion
+
+- Existing Candidate - History - New Test
+
+- New Candidate - Registration - New Test
+
+
+- New Test - Test Sequence - Graph pdf with details and print option
+                           - Send to candidate option
+
+						- Go to Dashboard - Dashboard
+						- Retest - Test Sequence

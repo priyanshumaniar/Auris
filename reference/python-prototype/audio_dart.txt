@@ -1,0 +1,140 @@
+dependencies:
+  flutter:
+    sdk: flutter
+  audioplayers: 0.20.1
+  charts_flutter: 0.11.0
+
+import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
+
+void main() {
+  runApp(MyApp());
+}
+
+class HearingTest {
+  int frequency;
+  int volume;
+
+  HearingTest(this.frequency, this.volume);
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Hearing Test App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: HearingTestScreen(),
+    );
+  }
+}
+
+class HearingTestScreen extends StatefulWidget {
+  @override
+  _HearingTestScreenState createState() => _HearingTestScreenState();
+}
+
+class _HearingTestScreenState extends State<HearingTestScreen> {
+  final AudioPlayer audioPlayer = AudioPlayer();
+  List<HearingTest> leftEarTests = [];
+  List<HearingTest> rightEarTests = [];
+
+  int currentFrequency = 125;
+  int currentVolume = 60;
+  int minVolume = 0;
+  int maxVolume = 60;
+  int maxFrequency = 8000;
+  int volumeStep = -5;
+  double durationPerTone = 0.5;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Hearing Test'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Testing Left Ear - Frequency: $currentFrequency Hz',
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              'Volume: $currentVolume dB (Left Ear)',
+              style: TextStyle(fontSize: 20),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _generateTone(true);
+              },
+              child: Text('Play Left Ear Sound'),
+            ),
+            Text(
+              'Testing Right Ear - Frequency: $currentFrequency Hz',
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              'Volume: $currentVolume dB (Right Ear)',
+              style: TextStyle(fontSize: 20),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _generateTone(false);
+              },
+              child: Text('Play Right Ear Sound'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _generateTone(bool isLeftEar) async {
+    final volume = currentVolume.toDouble();
+    final frequency = currentFrequency.toDouble();
+
+    final tone = List.generate(
+      (durationPerTone * 44100).toInt(),
+      (i) => volume * sin(2 * pi * frequency * i / 44100),
+    );
+
+    final audioCache = AudioCache(player: audioPlayer);
+    audioPlayer.setVolume(volume / 100);
+
+    if (isLeftEar) {
+      leftEarTests.add(HearingTest(currentFrequency, currentVolume));
+    } else {
+      rightEarTests.add(HearingTest(currentFrequency, currentVolume));
+    }
+
+    await audioCache.play(
+      "audio.wav",
+      mode: PlayerMode.LOW_LATENCY,
+      stayAwake: false,
+    );
+
+    setState(() {
+      currentVolume += volumeStep;
+      if (currentVolume < minVolume) {
+        currentVolume = maxVolume;
+        currentFrequency *= 2;
+        if (currentFrequency > maxFrequency) {
+          // Test completed
+          _showTestResults();
+        }
+      }
+    });
+  }
+
+  void _showTestResults() {
+    // You can use charts_flutter to display test results using charts.
+    // Example:
+    // final leftEarChart = charts.LineChart([...]);
+    // final rightEarChart = charts.LineChart([...]);
+  }
+}

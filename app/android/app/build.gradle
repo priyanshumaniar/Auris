@@ -1,0 +1,67 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // Must come after the Android and Kotlin plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+// Release signing. Put the upload keystore's details in android/key.properties
+// (never committed; see docs/BUILD_AND_TEST.md). Without that file a release
+// build is signed with the debug key, which installs on a device but is
+// refused by the Play Store.
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.withReader("UTF-8") { keystoreProperties.load(it) }
+}
+
+android {
+    namespace "dev.priyanshumaniar.auris"
+    compileSdk flutter.compileSdkVersion
+    ndkVersion flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    sourceSets {
+        main.java.srcDirs += "src/main/kotlin"
+    }
+
+    defaultConfig {
+        applicationId "dev.priyanshumaniar.auris"
+        minSdk flutter.minSdkVersion
+        targetSdk flutter.targetSdkVersion
+        // From "version:" in pubspec.yaml.
+        versionCode flutter.versionCode
+        versionName flutter.versionName
+    }
+
+    signingConfigs {
+        if (keystorePropertiesFile.exists()) {
+            release {
+                keyAlias keystoreProperties["keyAlias"]
+                keyPassword keystoreProperties["keyPassword"]
+                storeFile file(keystoreProperties["storeFile"])
+                storePassword keystoreProperties["storePassword"]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig keystorePropertiesFile.exists()
+                    ? signingConfigs.release
+                    : signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source "../.."
+}
